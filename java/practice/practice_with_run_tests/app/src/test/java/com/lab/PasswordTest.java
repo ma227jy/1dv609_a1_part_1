@@ -1,7 +1,6 @@
 package com.lab;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,11 +24,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PasswordTest {
     private IPassword getPassword(String s) throws Exception {
-        //return (IPassword) new Password(s);
-        return (IPassword) new BugDoesNotTrim(s);
+        return (IPassword) new Password(s);
+        //return (IPassword) new BugDoesNotTrim(s);
+        //return (IPassword) new BugToShortPassword(s);
         // return (IPassword) new BugToShortPassword(s);
-        // return (IPassword) new BugToShortPassword(s);
-        // return (IPassword) new BugVeryShort(s);
+        //return (IPassword) new BugVeryShort(s);
         // return (IPassword) new BugWrongExceptionMessage(s);
         // return (IPassword) new BugMissingPasswordLengthCheck(s);
         // return (IPassword) new BugMissingNumberCheck(s);
@@ -43,11 +42,20 @@ public class PasswordTest {
     }
 
     @Test
-    public void testIfPwIsTrimmed() throws Exception {
+    public void shouldTrimPassword() {
         String pw = "     Test123    ";
-        assertThrows(Exception.class,()-> {
-            getPassword(pw);
-        });
-        
+        assertThrows(Exception.class,()-> getPassword(pw));
+    }
+
+    @Test
+    public void shouldRejectPasswordThatIsToShort() {
+        String pw = "11charlongP"; // 11 char long password
+        assertThrows(Exception.class,() -> getPassword(pw));
+    }
+
+    @Test
+    public void shouldRejectVeryShortPasswword() {
+        String pw = "6chars"; // 6 char long password
+        assertThrows(Exception.class, () -> getPassword(pw));
     }
 }
