@@ -33,7 +33,7 @@ public class PasswordTest {
         //return (IPassword) new BugMissingPasswordLengthCheck(s);
         //return (IPassword) new BugMissingNumberCheck(s);
         //return (IPassword) new BugIsPasswordSameAlwaysTrue(s);
-        // return (IPassword) new BugWrongHashingAlgorithm(s);
+        //return (IPassword) new BugWrongHashingAlgorithm(s);
     }
 
     @Test
@@ -87,5 +87,22 @@ public class PasswordTest {
         IPassword pw2 = getPassword("TestPassword1");
 
         assertTrue(pw1.isPasswordSame(pw2));
+    }
+
+    @Test
+    public void shouldUseRightHashing() throws Exception {
+        IPassword pw = getPassword("TestPassword1");
+
+        String expectedHash = "1296575421";
+
+        assertEquals(expectedHash, String.valueOf(pw.getPasswordHash()));
+    }
+
+    @Test
+    public void ShouldCreateSameHashForSamePassword() throws Exception {
+        IPassword pw1 = getPassword("TestPassword1");
+        IPassword pw2 = getPassword("TestPassword1");
+
+        assertEquals(pw1.getPasswordHash(), pw2.getPasswordHash());
     }
 }
