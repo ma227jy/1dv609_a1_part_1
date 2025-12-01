@@ -109,7 +109,7 @@ public class SwedishSocialSecurityNumberTest {
     }
 
     @Test
-    public void shouldTrimPassword() {
+    public void shouldTrimSSN() {
         String ssn = "900101-0017  ";
         when(mockHelper.isCorrectLength("900101-0017")).thenReturn(true);
         when(mockHelper.isCorrectFormat("900101-0017")).thenReturn(true);
@@ -118,6 +118,8 @@ public class SwedishSocialSecurityNumberTest {
         when(mockHelper.luhnIsCorrect("900101-0017")).thenReturn(true);
 
         assertDoesNotThrow(() -> new SwedishSocialSecurityNumber(ssn, mockHelper));
+
+        verify(mockHelper).isCorrectLength("900101-0017");
     }
 
     @Test
@@ -148,7 +150,7 @@ public class SwedishSocialSecurityNumberTest {
         String ssn = "900101-0017";
         when(mockHelper.isCorrectLength(ssn)).thenReturn(true);
         when(mockHelper.isCorrectFormat(ssn)).thenReturn(true);
-        when(mockHelper.isValidMonth("13")).thenReturn(false);
+        when(mockHelper.isValidMonth("01")).thenReturn(false);
 
 
         Exception ex = assertThrows(Exception.class, () -> new SwedishSocialSecurityNumber(ssn, mockHelper));
