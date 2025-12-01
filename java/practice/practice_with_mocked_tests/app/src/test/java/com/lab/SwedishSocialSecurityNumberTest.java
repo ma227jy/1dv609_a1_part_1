@@ -8,38 +8,53 @@ import static org.mockito.Mockito.*;
 
 public class SwedishSocialSecurityNumberTest {
     
-    private SSNHelper helper;
-    //private BuggySSNHelperAllowDayUpTo30 helper;
+    //private SSNHelper helper;
+    private BuggySSNHelperAllowDayUpTo30 helper;
     //private BuggySSNHelperAllowMonth0 helper;
     //private BuggySSNHelperIncorrectFormat helper;
     //private BuggySSNHelperIncorrectFormatFalse helper;
     //private BuggySSNHelperMessyLuhn helper;
+    //private BuggySSNHelperWrongLength helper;
     
     private SSNHelper mockHelper;
     
     
     @BeforeEach
     public void setUp() {
-        helper = new SSNHelper();
-        //helper = new BuggySSNHelperAllowDayUpTo30();
+        //helper = new SSNHelper();
+        helper = new BuggySSNHelperAllowDayUpTo30();
         //helper = new BuggySSNHelperAllowMonth0();
         //helper = new BuggySSNHelperIncorrectFormat();
         //helper = new BuggySSNHelperIncorrectFormatFalse();
         //helper = new BuggySSNHelperMessyLuhn();
+        //helper = new BuggySSNHelperWrongLength();
 
         mockHelper = mock(SSNHelper.class);
     }
     
+    
     @Test
-    public void shouldAcceptValidSSN() throws Exception {
-        SwedishSocialSecurityNumber ssn = new SwedishSocialSecurityNumber("900101-0017", helper);
+    public void shouldCreateValidSSNWhenAllChecksPass() throws Exception {
+        when(mockHelper.isCorrectLength("900101-0017")).thenReturn(true);
+        when(mockHelper.isCorrectFormat("900101-0017")).thenReturn(true);
+        when(mockHelper.isValidMonth("01")).thenReturn(true);
+        when(mockHelper.isValidDay("01")).thenReturn(true);
+        when(mockHelper.luhnIsCorrect("900101-0017")).thenReturn(true);
         
+        SwedishSocialSecurityNumber ssn = new SwedishSocialSecurityNumber("900101-0017", mockHelper);
+        
+        // Assert: Verify the SSN was created and methods work
         assertEquals("90", ssn.getYear());
         assertEquals("01", ssn.getMonth());
         assertEquals("01", ssn.getDay());
         assertEquals("0017", ssn.getSerialNumber());
-
-        assertEquals("900101-0017", ssn.getSSN());
+        
+        // Verify that the mock methods were called
+        verify(mockHelper).isCorrectLength("900101-0017");
+        verify(mockHelper).isCorrectFormat("900101-0017");
+        verify(mockHelper).isValidMonth("01");
+        verify(mockHelper).isValidDay("01");
+        verify(mockHelper).luhnIsCorrect("900101-0017");
     }
 
     @Test
