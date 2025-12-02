@@ -8,8 +8,8 @@ import static org.mockito.Mockito.*;
 
 public class SwedishSocialSecurityNumberTest {
     
-    //private SSNHelper helper;
-    private BuggySSNHelperAllowDayUpTo30 helper;
+    private SSNHelper helper;
+    //private BuggySSNHelperAllowDayUpTo30 helper;
     //private BuggySSNHelperAllowMonth0 helper;
     //private BuggySSNHelperIncorrectFormat helper;
     //private BuggySSNHelperIncorrectFormatFalse helper;
@@ -21,8 +21,8 @@ public class SwedishSocialSecurityNumberTest {
     
     @BeforeEach
     public void setUp() {
-        //helper = new SSNHelper();
-        helper = new BuggySSNHelperAllowDayUpTo30();
+        helper = new SSNHelper();
+        //helper = new BuggySSNHelperAllowDayUpTo30();
         //helper = new BuggySSNHelperAllowMonth0();
         //helper = new BuggySSNHelperIncorrectFormat();
         //helper = new BuggySSNHelperIncorrectFormatFalse();
@@ -42,7 +42,12 @@ public class SwedishSocialSecurityNumberTest {
         when(mockHelper.luhnIsCorrect("900101-0017")).thenReturn(true);
         
         SwedishSocialSecurityNumber ssn = new SwedishSocialSecurityNumber("900101-0017", mockHelper);
-        
+        //BuggySwedishSocialSecurityNumberNoLenCheck ssn = new BuggySwedishSocialSecurityNumberNoLenCheck("900101-0017", mockHelper);
+        //BuggySwedishSocialSecurityNumberNoLuhn ssn = new BuggySwedishSocialSecurityNumberNoLuhn("900101-0017", mockHelper);
+        //BuggySwedishSocialSecurityNumberNoTrim ssn = new BuggySwedishSocialSecurityNumberNoTrim("900101-0017", mockHelper);
+        //BuggySwedishSocialSecurityNumberWrongYear ssn = new BuggySwedishSocialSecurityNumberWrongYear("900101-0017", mockHelper);
+      
+
         // Assert: Verify the SSN was created and methods work
         assertEquals("90", ssn.getYear());
         assertEquals("01", ssn.getMonth());
@@ -125,16 +130,25 @@ public class SwedishSocialSecurityNumberTest {
 
     @Test
     public void shouldTrimSSN() {
-        String ssn = "900101-0017  ";
-        when(mockHelper.isCorrectLength("900101-0017")).thenReturn(true);
-        when(mockHelper.isCorrectFormat("900101-0017")).thenReturn(true);
+        String ssnTrimmed = "900101-0017";
+        String ssnNotTrimmed = "900101-0017  ";
+        when(mockHelper.isCorrectLength(ssnTrimmed)).thenReturn(true);
+        when(mockHelper.isCorrectFormat(ssnTrimmed)).thenReturn(true);
         when(mockHelper.isValidMonth("01")).thenReturn(true);
         when(mockHelper.isValidDay("01")).thenReturn(true);
-        when(mockHelper.luhnIsCorrect("900101-0017")).thenReturn(true);
+        when(mockHelper.luhnIsCorrect(ssnTrimmed)).thenReturn(true);
 
-        assertDoesNotThrow(() -> new SwedishSocialSecurityNumber(ssn, mockHelper));
+        assertDoesNotThrow(() -> new SwedishSocialSecurityNumber(ssnNotTrimmed, mockHelper));
+        //assertDoesNotThrow(() -> new BuggySwedishSocialSecurityNumberNoLenCheck(ssnNotTrimmed, mockHelper));
+        //assertDoesNotThrow(() -> new BuggySwedishSocialSecurityNumberNoLuhn(ssnNotTrimmed, mockHelper));
+        //assertDoesNotThrow(() -> new BuggySwedishSocialSecurityNumberNoTrim(ssnNotTrimmed, mockHelper));
+        //assertDoesNotThrow(() -> new BuggySwedishSocialSecurityNumberWrongYear(ssnNotTrimmed, mockHelper));
 
-        verify(mockHelper).isCorrectLength("900101-0017");
+        verify(mockHelper).isCorrectLength(ssnTrimmed);
+        verify(mockHelper).isCorrectFormat(ssnTrimmed);
+        verify(mockHelper).isValidMonth("01");
+        verify(mockHelper).isValidDay("01");
+        verify(mockHelper).luhnIsCorrect(ssnTrimmed);
     }
 
     @Test
@@ -142,7 +156,13 @@ public class SwedishSocialSecurityNumberTest {
         String ssn = "9001010-0017";
         when(mockHelper.isCorrectLength(ssn)).thenReturn(false);
 
-        Exception ex = assertThrows(Exception.class, () -> new SwedishSocialSecurityNumber(ssn, mockHelper));
+        Exception ex = assertThrows(Exception.class, () ->
+            new SwedishSocialSecurityNumber(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLenCheck(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLuhn(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoTrim(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberWrongYear(ssn, mockHelper));
+        
         assertEquals("To short, must be 11 characters", ex.getMessage());
 
         verify(mockHelper).isCorrectLength(ssn);
@@ -154,7 +174,13 @@ public class SwedishSocialSecurityNumberTest {
         when(mockHelper.isCorrectLength(ssn)).thenReturn(true);
         when(mockHelper.isCorrectFormat(ssn)).thenReturn(false);
 
-        Exception ex = assertThrows(Exception.class, () -> new SwedishSocialSecurityNumber(ssn, mockHelper));
+        Exception ex = assertThrows(Exception.class, () ->
+            new SwedishSocialSecurityNumber(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLenCheck(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLuhn(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoTrim(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberWrongYear(ssn, mockHelper));
+        
         assertEquals("Incorrect format, must be: YYMMDD-XXXX", ex.getMessage());
 
         verify(mockHelper).isCorrectFormat(ssn);
@@ -168,7 +194,13 @@ public class SwedishSocialSecurityNumberTest {
         when(mockHelper.isValidMonth("01")).thenReturn(false);
 
 
-        Exception ex = assertThrows(Exception.class, () -> new SwedishSocialSecurityNumber(ssn, mockHelper));
+        Exception ex = assertThrows(Exception.class, () ->
+            new SwedishSocialSecurityNumber(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLenCheck(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLuhn(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoTrim(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberWrongYear(ssn, mockHelper));
+        
         assertEquals("Invalid month in SSN", ex.getMessage());
 
         verify(mockHelper).isValidMonth("01");
@@ -183,7 +215,13 @@ public class SwedishSocialSecurityNumberTest {
         when(mockHelper.isValidDay("01")).thenReturn(false);
 
 
-        Exception ex = assertThrows(Exception.class, () -> new SwedishSocialSecurityNumber(ssn, mockHelper));
+        Exception ex = assertThrows(Exception.class, () ->
+            new SwedishSocialSecurityNumber(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLenCheck(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLuhn(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoTrim(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberWrongYear(ssn, mockHelper));
+        
         assertEquals("Invalid day in SSN", ex.getMessage());
 
         verify(mockHelper).isValidDay("01");
@@ -199,7 +237,13 @@ public class SwedishSocialSecurityNumberTest {
         when(mockHelper.luhnIsCorrect(ssn)).thenReturn(false);
 
 
-        Exception ex = assertThrows(Exception.class, () -> new SwedishSocialSecurityNumber(ssn, mockHelper));
+        Exception ex = assertThrows(Exception.class, () ->
+            new SwedishSocialSecurityNumber(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLenCheck(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoLuhn(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberNoTrim(ssn, mockHelper));
+            //new BuggySwedishSocialSecurityNumberWrongYear(ssn, mockHelper));
+        
         assertEquals("Invalid SSN according to Luhn's algorithm", ex.getMessage());
 
         verify(mockHelper).luhnIsCorrect(ssn);
@@ -213,8 +257,13 @@ public class SwedishSocialSecurityNumberTest {
         when(mockHelper.isValidMonth("01")).thenReturn(true);
         when(mockHelper.isValidDay("01")).thenReturn(true);
         when(mockHelper.luhnIsCorrect(ssn)).thenReturn(true);
-
+        
         SwedishSocialSecurityNumber ssnObject = new SwedishSocialSecurityNumber("900101-0017", mockHelper);
+        //BuggySwedishSocialSecurityNumberNoLenCheck ssnObject = new BuggySwedishSocialSecurityNumberNoLenCheck("900101-0017", mockHelper);
+        //BuggySwedishSocialSecurityNumberNoLuhn ssnObject = new BuggySwedishSocialSecurityNumberNoLuhn("900101-0017", mockHelper);
+        //BuggySwedishSocialSecurityNumberNoTrim ssnObject = new BuggySwedishSocialSecurityNumberNoTrim("900101-0017", mockHelper);
+        //BuggySwedishSocialSecurityNumberWrongYear ssnObject = new BuggySwedishSocialSecurityNumberWrongYear("900101-0017", mockHelper);
+        
         assertEquals("90", ssnObject.getYear());
 
         // Verify that the mock methods were called
